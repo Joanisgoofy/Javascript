@@ -1,57 +1,14 @@
 let myshop =  document.getElementById('shop')
 console.log(myshop)
 
-let basket = []
-let productShop = [
-    {
-        id: 'Hello',
-        name: 'Casual Shirt',
-        img: './images/img-1.jpg',
-        desc: 'A very nice for male',
-        price: 30000
-    },
-    {
-        id: 'Green',
-        name: 'Casual Shirt',
-        img: './images/img-3.jpg',
-        desc: 'A very nice for male',
-        price: 45000
-    },
-    {
-        id: 'White',
-        name: 'Casual Shirt',
-        img: './images/img-4.jpg',
-        desc: 'A very nice for male',
-        price: 30000
-    },
-    {
-        id: 'Hello2',
-        name: 'Casual Shirt',
-        img: './images/img-5.png',
-        desc: 'A very nice for male',
-        price: 30000
-    },
-    {
-        id: 'Hello3',
-        name: 'Casual Shirt',
-        img: './images/img-6.png',
-        desc: 'A very nice for male',
-        price: 30000
-    },
-    {
-        id: 'Hello4',
-        name: 'Casual Shirt',
-        img: './images/img-7.png',
-        desc: 'A very nice for male',
-        price: 30000
-    },
-]
+let basket = JSON.parse(localStorage.getItem('data')) || []
 
 
 let shopData = () => {
     return(
         myshop.innerHTML = productShop.map((x) => {
             let {id, img, desc, price, name} = x
+            let search =  basket.find((x) => x.id == id) || []
             return(`
 
                         <div id=product-id-${id} class="item">
@@ -63,7 +20,7 @@ let shopData = () => {
                                     <h3>&#x20A6; ${price}</h3>
                                     <div>
                                         <span onclick="decrease(${id})"><i class="bi bi-dash-lg"></i></span>
-                                        <span id=${id}>0</span>
+                                        <span id=${id}>${search.item === undefined ? 0 :search.item }</span>
                                         <span onclick="increase(${id})"><i class="bi bi-plus-lg"></i></span>
                                     </div>
                                 </div>
@@ -93,6 +50,7 @@ let increase = (id) => {
     
     // console.log(basket)
     update(selected.id)
+    localStorage.setItem('data', JSON.stringify(basket))
 
 }
 
@@ -101,6 +59,7 @@ let decrease = (id) => {
     // console.log(selected.id)
     let search = basket.find((x) => x.id === selected.id)
     // console.log(search)
+    if (search === undefined)return;
     if (search.item === 0)return;
     else{
         search.item -= 1
@@ -108,6 +67,8 @@ let decrease = (id) => {
     
     // console.log(basket)
     update(selected.id)
+    basket = basket.filter((x) => x.item !==0)
+    localStorage.setItem('data', JSON.stringify(basket))
 }
 
 let update = (id) => {
@@ -115,5 +76,14 @@ let update = (id) => {
 
     let search  = basket.find((x) => x.id === id)
     document.getElementById(id).innerHTML = search.item
+    mycart()
     
 }
+
+let mycart = () => {
+    // console.log('cart')
+    let cartIcon = document.getElementById('cartamount')
+    cartIcon.innerHTML =  basket.map((x) => x.item).reduce((prev, next) => prev + next, 0)
+    // console.log(search)
+}
+mycart()
