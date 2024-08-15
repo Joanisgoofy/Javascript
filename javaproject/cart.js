@@ -16,7 +16,18 @@ console.log(basket)
 
 let generateCart = () => {
     if (basket.length !==0){
-        console.log('Item available')
+        shoppingcart.innerHTML = basket.map((x) => {
+            let {id, item} = x
+            let search = productShop.find((y) => y.id ===id)
+            return(
+                `<div>
+                <img src=${search.img} alt />
+                </div>
+
+        
+                `
+            )
+        })
     }else{
         label.innerHTML = `
         <div>
