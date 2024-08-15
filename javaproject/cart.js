@@ -21,7 +21,20 @@ let generateCart = () => {
             let search = productShop.find((y) => y.id ===id)
             return(
                 `<div>
-                <img src=${search.img} alt />
+                <img width="100" src=${search.img} alt />
+                <div class="details">
+                <h3>
+                <p>${search.name}</p>
+                <p>${search.price}</p>
+                <span>X</span>
+                </h3>
+                </div>
+                <div>
+                                        <span onclick="decrease(${id})"><i class="bi bi-dash-lg"></i></span>
+                                        <span id=${id}>${item}</span>
+                                        <span onclick="increase(${id})"><i class="bi bi-plus-lg"></i></span>
+                                    </div>
+                                    <h4>${item * search.price}</h4>
                 </div>
 
         
@@ -40,3 +53,53 @@ let generateCart = () => {
     }
 }
 generateCart()
+
+
+
+let increase = (id) => {
+    let selected = id
+    // console.log(selected.id)
+    let search = basket.find((x) => x.id === selected.id)
+    // console.log(search)
+    if (search === undefined){
+        basket.push({
+            id: selected.id,
+            item: 1
+        })
+    }else{
+        search.item +=1
+    }
+    
+    generateCart()
+    console.log(basket)
+    update(selected.id)
+    localStorage.setItem('data', JSON.stringify(basket))
+
+}
+
+let decrease = (id) => {
+    let selected = id
+    // console.log(selected.id)
+    let search = basket.find((x) => x.id === selected.id)
+    // console.log(search)
+    if (search === undefined)return;
+    if (search.item === 0)return;
+    else{
+        search.item -= 1
+    }
+    
+    generateCart()
+    console.log(basket)
+    update(selected.id)
+    basket = basket.filter((x) => x.item !==0)
+    localStorage.setItem('data', JSON.stringify(basket))
+}
+
+let update = (id) => {
+    console.log(id)
+
+    let search  = basket.find((x) => x.id === id)
+    document.getElementById(id).innerHTML = search.item
+    mycart()
+    
+}
