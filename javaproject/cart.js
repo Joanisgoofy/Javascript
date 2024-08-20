@@ -26,7 +26,7 @@ let generateCart = () => {
                 <h3>
                 <p>${search.name}</p>
                 <p>${search.price}</p>
-                <span>X</span>
+                <span onclick="removeItem(${id})">X</span>
                 </h3>
                 </div>
                 <div>
@@ -100,6 +100,42 @@ let update = (id) => {
 
     let search  = basket.find((x) => x.id === id)
     document.getElementById(id).innerHTML = search.item
+    getTotalAmount()
     mycart()
     
 }
+
+let removeItem = (id) => {
+    let selected = id
+    console.log(selected.id)
+    generateCart()
+    getTotalAmount()
+    mycart()
+    basket = basket.filter((x) => x.id !== selected.id)
+    localStorage.setItem('data', JSON.stringify(basket))
+}
+
+
+let clearCart = () => {
+    basket = []
+    generateCart()
+    mycart()
+    // console.log('clear cart')
+    localStorage.setItem('data', JSON.stringify(basket))
+}
+let getTotalAmount = () =>{
+
+    if(basket.length !== 0){
+        let amount = basket.map((x) =>{
+            let {id,item} = x
+            let search = productShop.find((y) => y.id == id) ||[]
+            return item * search.price
+        }).reduce((prev, next) => prev + next, 0)
+        label.innerHTML=`
+        <h3>Total Bill: ${amount}</h3>
+        <button onclick="clearCart()">Clear Cart</button>
+        <button>Check Out</button>
+        `
+    }else return
+}
+getTotalAmount()
